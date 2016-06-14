@@ -11,7 +11,8 @@ namespace Orchard.Environment.Commands.Builtin
         private readonly IServiceProvider _serviceProvider;
         private readonly CommandHandlerDescriptorBuilder _builder = new CommandHandlerDescriptorBuilder();
 
-        public HelpCommand(IServiceProvider serviceProvider)
+        public HelpCommand(IServiceProvider serviceProvider,
+            IStringLocalizer<HelpCommand> localizer) : base (localizer)
         {
             _serviceProvider = serviceProvider;
         }
@@ -20,8 +21,8 @@ namespace Orchard.Environment.Commands.Builtin
         [CommandHelp("help commands\r\n\tDisplay help text for all available commands")]
         public void AllCommands()
         {
-            Context.Output.WriteLine(T("List of available commands:"));
-            Context.Output.WriteLine(T("---------------------------"));
+            Context.Output.WriteLine(T["List of available commands:"]);
+            Context.Output.WriteLine(T["---------------------------"]);
             Context.Output.WriteLine("");
 
             var descriptors = GetCommandDescriptors().OrderBy(d => d.Names.First());
@@ -45,7 +46,7 @@ namespace Orchard.Environment.Commands.Builtin
 
             if (!descriptors.Any())
             {
-                Context.Output.WriteLine(T($"Command {command} doesn't exist"));
+                Context.Output.WriteLine(T["Command {0} doesn't exist"]);
             }
             else
             {
@@ -66,10 +67,10 @@ namespace Orchard.Environment.Commands.Builtin
         {
             if (string.IsNullOrEmpty(descriptor.HelpText))
             {
-                return T($"{descriptor.MethodInfo.DeclaringType?.FullName}.{descriptor.MethodInfo.Name}: no help text");
+                return T[$"{descriptor.MethodInfo.DeclaringType?.FullName}.{descriptor.MethodInfo.Name}: no help text"];
             }
 
-            return T(descriptor.HelpText);
+            return T[descriptor.HelpText];
         }
     }
 }
